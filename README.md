@@ -222,3 +222,20 @@ refresh_tokens  → id, user_id, token, expires_at, is_revoked
 - [ ] Company-specific question banks (Google, Amazon, Meta)
 - [ ] Stripe subscription (Pro plan)
 - [ ] Mobile app (React Native)
+
+## 🚀 Live Demo
+Coming soon...
+
+## 🛠️ Tech Stack
+- Frontend: React.js
+- Backend: FastAPI (Python)
+- Database: SQLite
+- AI: Groq (LLaMA 3.3 70B)
+- Auth: JWT
+
+## ⚡ Features
+- AI-powered interview questions
+- Real-time answer evaluation
+- Score breakdown (Technical/Communication/Confidence)
+- Analytics dashboard
+- 8 job roles supported
