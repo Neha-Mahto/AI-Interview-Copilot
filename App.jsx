@@ -337,7 +337,7 @@ function LandingPage({ onStart }) {
       {/* Hero */}
       <div className="fade-up" style={{ padding: "96px 32px 72px", maxWidth: 1100, margin: "0 auto", textAlign: "center", position: "relative" }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "#6366F112", border: "1px solid #6366F128", borderRadius: 100, padding: "5px 15px", marginBottom: 28, fontSize: 12, color: "#818cf8" }}>
-          <Sparkles size={12} /> Powered by Claude AI · Free to Try · No Setup
+          <Sparkles size={12} /> Powered by AI · Free to Try · No Setup
         </div>
         <h1 style={{ fontSize: 62, fontWeight: 900, lineHeight: 1.08, marginBottom: 20, color: "#f1f5f9", letterSpacing: -2.5 }}>
           Master Your Next<br />
