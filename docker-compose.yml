@@ -1,0 +1,79 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: ic_postgres
+    environment:
+      POSTGRES_DB: interview_copilot
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres_secret}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/migrations/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: ic_redis
+    ports:
+      - "6379:6379"
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: ic_backend
+    environment:
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-postgres_secret}@db:5432/interview_copilot
+      SECRET_KEY: ${SECRET_KEY:-change_this_in_production_min_32_chars}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      REDIS_URL: redis://redis:6379/0
+      ENVIRONMENT: production
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: ic_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    container_name: ic_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - backend
+      - frontend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
